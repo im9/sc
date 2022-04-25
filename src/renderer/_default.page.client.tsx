@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import * as monaco from "monaco-editor";
 import { getPage } from "vite-plugin-ssr/client";
 import { PageLayout } from "./PageLayout";
-import * as monaco from "monaco-editor";
 
 hydrate();
 
