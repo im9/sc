@@ -14,3 +14,25 @@ a {
 .navitem {
   padding: 3px;
 }
+
+.inlineDecoration {
+  animation: fade-in-out 3s ease;
+}
+
+@-webkit-keyframes fade-in-out {
+  0% {
+    background: lightgreen;
+  }
+  100% {
+    background: inherit;
+  }
+}
+
+@keyframes fade-in-out {
+  0% {
+    background: lightgreen;
+  }
+  100% {
+    background: inherit;
+  }
+}
