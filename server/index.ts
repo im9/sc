@@ -1,5 +1,6 @@
 import initFastifyVite from "./init-fastify-vite";
 import { createPageRenderer } from "vite-plugin-ssr";
+import { keywords } from "../synth";
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;
@@ -49,19 +50,20 @@ const startServer = async () => {
     rep.code(statusCode).type(contentType).send(body);
   });
 
-  app.get("/ping", async (_, rep) => rep.send("Pong"));
-
   app.ready((err) => {
     if (err) throw err;
 
     app.io.on("connection", (socket: any) => {
+      console.log("a user connected");
+
       socket.on("exec message", (msg: string) => {
-        if (msg === "bubbles") {
+        if (keywords.includes(msg)) {
           console.log("exec: " + msg);
           bubbles();
         }
-        console.log("message: " + msg);
-        io.emit("exec message", msg); // TODO ブラウザにログを送信
+
+        // ブラウザにログを送信
+        socket.emit("logger", msg);
       });
 
       socket.on("disconnect", () => {
