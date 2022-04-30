@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
+import io from "socket.io-client";
 
 const defaultValue = [
   "function x() {",
@@ -22,6 +23,10 @@ function App() {
         const r = editorRef.current?.getSelection();
         const v = editorRef.current?.getModel().getValueInRange(r);
         setExecValue(v);
+
+        const socket = io();
+        socket.emit("exec message", v);
+
         event.stopPropagation();
         return;
       }

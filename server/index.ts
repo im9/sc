@@ -7,6 +7,10 @@ const root = `${__dirname}/..`;
 const startServer = async () => {
   const app = await initFastifyVite();
 
+  const server = require("http").createServer(app);
+  const io = require("socket.io")(server);
+  const bubbles = require("../synth/bubbles");
+
   let viteDevServer;
 
   if (isProduction) {
@@ -46,6 +50,25 @@ const startServer = async () => {
   });
 
   app.get("/ping", async (_, rep) => rep.send("Pong"));
+
+  app.ready((err) => {
+    if (err) throw err;
+
+    app.io.on("connection", (socket: any) => {
+      socket.on("exec message", (msg: string) => {
+        if (msg === "bubbles") {
+          console.log("exec: " + msg);
+          bubbles();
+        }
+        console.log("message: " + msg);
+        io.emit("exec message", msg); // TODO ブラウザにログを送信
+      });
+
+      socket.on("disconnect", () => {
+        console.log("user disconnected");
+      });
+    });
+  });
 
   const port = process.env.PORT || 3000;
 
